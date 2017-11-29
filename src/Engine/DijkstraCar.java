@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import Dijkstra.Vertex;
 import Dijkstra.Edge;
 import Dijkstra.Graph;
+import Dijkstra.Vertex;
 
-
-public class DijkstraAlgorithm {
+public class DijkstraCar {
+	
 
     private final List<Vertex> nodes;
     private final List<Edge> edges;
@@ -22,8 +22,8 @@ public class DijkstraAlgorithm {
     private Set<Vertex> unSettledNodes;
     private Map<Vertex, Vertex> predecessors;
     private Map<Vertex, Integer> distance;
-
-    public DijkstraAlgorithm(Graph graph) {
+    
+    public DijkstraCar(Graph graph) {
         // create a copy of the array so that we can operate on this array
         this.nodes = new ArrayList<Vertex>(graph.getVertexes());
         this.edges = new ArrayList<Edge>(graph.getEdges());
@@ -42,6 +42,20 @@ public class DijkstraAlgorithm {
             unSettledNodes.remove(node);
             findMinimalDistances(node);
         }
+    }
+    
+    public Map<Vertex, Float> findMinimalPrices(float costPerKM, String desiredItem) {
+    	Map<Vertex, Float> pricesList = new HashMap<Vertex, Float>();
+    	for(Vertex testedVertex : nodes) {
+    		if(testedVertex.itemPrice(desiredItem) > 0) {
+    			float thisNodePrice = testedVertex.itemPrice(desiredItem) + 
+    					getShortestDistance(testedVertex) * costPerKM;
+    					pricesList.put(testedVertex, thisNodePrice);
+    		} else {
+    			pricesList.put(testedVertex, Float.MAX_VALUE);
+    		}
+    	}
+    	return pricesList;
     }
 
     private void findMinimalDistances(Vertex node) {
